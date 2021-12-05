@@ -1,0 +1,25 @@
+*{
+    margin: 0px;
+    padding: 0px;
+}
+.box{
+
+}
+.infoBox{
+    border: 1px solid silver;
+    overflow:scroll;
+    width: 80%;
+    height: 450px;
+    margin-left: 60px;
+<!--background: #F5F5F5;-->
+    overflow-y: scroll;
+    margin-bottom: 25px;
+}
+#info{
+    display: inline-block;
+    border: 1px solid red;
+}
+.command{
+    width: 75%;
+
+}

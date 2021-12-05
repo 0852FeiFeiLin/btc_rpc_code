@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bitcion Info Query</title>
+</head>
+<link rel="stylesheet" href="/static/css/index.css">
+
+<script src="/static/js/jquery-1.8.3.min.js" type="text/javascript"></script>
+<script>
+    /* function Info() {
+         //用户输入的命令行
+         var Command = document.getElementById("command").value;
+         //调用发送请求方法，把命令行传递进去
+         GetInfo(Command)
+     }*/
+    var event;
+
+    //创建一个函数阻止表单提交
+    function func() {
+        return false;
+    }
+
+    //创建一个判断是不是json数据格式函数
+    function isJSON(str) {
+        if (typeof str == 'string') {
+            try {
+                //转为json类型
+                var obj = JSON.parse(str);
+                if (typeof obj == 'object' && obj) {
+                    return true
+                } else {
+                    return false;
+                }
+            } catch (e) {
+                console.log('error:' + str + '!!!' + e)
+                return false;
+            }
+        }
+    }
+
+    //这个是前端发送请求和接收回传数据的函数，用作显示在页面
+    function GetInfo() {
+        //用户输入的命令行
+        var Command = document.getElementById("command").value;
+
+        //创建一个XMLHttpRequest对象
+        var xhr = new XMLHttpRequest();
+        //请求方法，匹配url，同步true 异步false
+        // xhr.open('GET','/index?command='+Command,true);
+        xhr.open('POST', '/index', true);
+        //创建一个对象， 里面有要发送的数据
+        var command = {
+            "command": Command
+        };
+        //设置请求头
+        xhr.setRequestHeader('Content-Type', 'application/json;charset-UTF-8');
+        //xml发送命令行个后端，可以把参数什么的也发送给后端,发送的是json格式的字符串
+        xhr.send(JSON.stringify(command));
+        //这个函数是党xhr对象发生变化时，处理的函数，我们这里用于接收返回的数据，然后显示在页面
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {//读取完毕
+                if (xhr.status === 200) {//当返回码和状态码为4,和200的时候代表请求成功。响应就绪
+                    //responseText 就是后端响应的数据以字符串格式的  responseXml  XML数据形式的响应数据
+                    var res = xhr.responseText;
+                    console.log(res);
+                    //判断是不是JSON格式字符串
+                    if (isJSON(res)) {  //是，先进行解析，然后再以json格式的字符串形式显示子在页面
+                        var parse = JSON.parse(res);
+                        document.getElementById("info").innerHTML = JSON.stringify(parse, null, "\t");
+                    } else {
+                        document.getElementById("info").innerHTML = res;
+                    }
+                    /*先获取到前面的数据，然后后面返回的就直接+ 上去，*/
+                    // var infovalue = document.getElementById("info").value;
+                    //document.getElementById("info").innerHTML = infovalue + "\n" + content;
+                    /*
+                    *问题1： 这里出了问题，没有实现局部刷新，内容展示他跳转了页面，
+                    * 问题2 ：怎么实现添加，而不是直接刷新全部的数据，就是
+                    *
+                  * */
+                    // document.getElementById("info").innerHTML = JSON.stringify(parse, null, "\t") ;
+                    console.log(JSON.stringify(parse, null, "\t"));
+                }
+            }
+        }
+        //ajax发起请求
+        /*  $.ajax({
+              url: "/index",
+              type: "POST",
+              dataType: "json",
+              data: userinput,
+              contentType: "application/json;charset=utf-8",
+              success: function (info) {
+                  var parse = JSON.parse(info)
+                  var content = JSON.stringify(parse, null, "\t")
+                  document.getElementById("info").innerHTML = content;
+              }
+          })*/
+    }
+</script>
+<!--模拟BitCoin Core 控制台的项目结构 -->
+<body>
+<div class="box">
+    <form onsubmit="return func()">
+        <p>
+            欢迎使用 Bitcoin Core 的 RPC 控制台。<br>
+            输入 help 显示可用命令信息。<br>
+            输入 help-console 以取得使用这个控制台的更多信息。<br>
+        </p>
+
+        <!--{{.}}-->
+
+        <div name="infoBox" class="infoBox">
+            <pre id="info" style="display: block"></pre>
+        </div>
+        <lable>
+            输入命令：
+            <input id="command" type="text" class="command" onkeydown="if(event.keyCode===13){GetInfo()}"/>
+        </lable>
+    </form>
+</div>
+</body>
+</html>
