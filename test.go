@@ -31,7 +31,7 @@ func main() {
 	//server.GetBalance()
 	//server.GetBlockChainInfo()
 
-
+//iiiii
 	server.GetBlockChainInfo()
 
 }
